@@ -1,0 +1,9 @@
+Package: inspirehep
+Title: Facilitating access to the INSPIRE HEP API
+Version: 0.0.0.9000
+Authors@R: person("Najko", "Jahn", email = "najko.jahn@gmail.com", role = c("aut", "cre"))
+Description: This package gives acccess to the INSPIRE HEP API. 
+  INSPIRE HEP is a comprehensive source for High-Energy Physics Literature.
+Depends: R (>= 3.2.4)
+License: MIT
+LazyData: true

@@ -7,12 +7,15 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njahn82/inspirehep?branch=master&svg=true)](https://ci.appveyor.com/project/njahn82/inspirehep)
 [![Coverage Status](https://img.shields.io/codecov/c/github/njahn82/inspirehep/master.svg)](https://codecov.io/github/njahn82/inspirehep?branch=master)
 
-This package gives acccess to [INSPIRE HEP](https://inspirehep.net/), a 
+This package gives access to [INSPIRE HEP](https://inspirehep.net/), a 
 comprehensive source for High-Energy Physics Literature. 
 
 API Documentation: <https://inspirehep.net/info/hep/api>
 
-*Please be nice and use the following options for bulk downloads:*
+No API registration needed, no limits in place.
+
+If you need to gather many records or in case you have many queries, please be
+nice and consider the following options for bulk downloads:
 
 - [OAI-PMH](https://inspirehep.net/oai2d?verb=Identify)
 - [JSON Dump](https://inspirehep.net/hep_records.json.gz)
@@ -20,7 +23,7 @@ API Documentation: <https://inspirehep.net/info/hep/api>
 
 ## Installation
 
-Get the developement version from GitHub
+Get the development version from GitHub
 
 
 ```r
@@ -37,18 +40,18 @@ library('inspirehep')
 
 ## Basic usage
 
-Use  `hep_search` to search INSPIRE HEP and `hep_details` to get detailled 
+Use  `hep_search` to search INSPIRE HEP, and `hep_details` to get detailed
 information on the record-level.
 
 ### Searching INSPIRE HEP
 
-If you are familiar with the INSPIRE HEP web search, discovering literature 
-with `hep_search` is easy because the API supports all well-known search 
-features. Through the SPIRES syntax not only searching metadata is possible, but
-also structured full-text queries are supported. 
+If you are familiar with the INSPIRE HEP web search, discovering literature
+with `hep_search` is easy because the API supports all well-known search
+features. Through the SPIRES syntax not only searching metadata is possible,
+but also structured full-text queries are supported.
 
-The INSPIRE HEP team gives search tips with a particular focus on the 
-SPIRES syntax: <https://inspirehep.net/info/hep/search-tips>
+The INSPIRE HEP team gives search tips with a particular focus on the SPIRES
+syntax: <https://inspirehep.net/info/hep/search-tips>
 
 `hep_search` parses the resulting MARC XML and returns key metadata as 
 `data.frame` with the following columns:
@@ -94,9 +97,9 @@ hep_search("witten black hole", limit = 5) %>%
 
 #### Exact Author search
 
-INSPIRE HEP disambiguates author names. To search for an exact author, e.g. 
-[Dominik Schwarz](http://inspirehep.net/author/profile/D.J.Schwarz.1) and get 
-his most frequent journals:
+INSPIRE HEP disambiguates author names. To search for an exact author, e.g.
+[Dominik Schwarz](http://inspirehep.net/author/profile/D.J.Schwarz.1) and get
+the most frequent journals:
 
 
 ```r
@@ -146,7 +149,7 @@ hep_search('find ft "faster than light"', limit = 5) %>%
 
 #### Navigate through the search results
 
-By default, 100 records are returned for each query. The parameter `limit` can 
+By default, 100 records are returned for each query. The parameter `limit` can
 be used to controll the number of records that you wish to retrieve.
 
 To jump to a record, use the `jrec` parameter. For example, you want records 20 
@@ -176,12 +179,17 @@ hep_search('witten black hole', jrec = 20, limit = 10) %>%
 #>   (chr), issue (chr), keywords (chr), collection (chr), licence_url (chr)
 ```
 
-Last but not least, you can use `batch_size` to control the size of your result
-pages. By default, `batch_size` groups 10 records for each page. The 
-maximum number is 250. Please note that large values per page could cause longer
-response times.
+Last but not least, you can use `batch_size` to control the size of your
+result pages. By default, `batch_size` groups 10 records into a single page.
+The maximum number is 250. Please note that large values per page could cause
+longer response times. Consider the bulk download options via OAI-PMH or the
+json data dump if you need to get to work with a large set of INSPIRE records.
 
-## META
+### Get record details
+
+to be added
+
+## Meta
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
 

@@ -1,7 +1,14 @@
 
 # inspirehep - facilitating access to high-energy physics literature with R
 
-
+```{r echo=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+```
 
 [![Travis-CI Build Status](https://travis-ci.org/njahn82/inspirehep.svg?branch=master)](https://travis-ci.org/njahn82/inspirehep)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njahn82/inspirehep?branch=master&svg=true)](https://ci.appveyor.com/project/njahn82/inspirehep)
@@ -22,16 +29,14 @@ API Documentation: <https://inspirehep.net/info/hep/api>
 
 Get the developement version from GitHub
 
-
-```r
+```{r eval=FALSE}
 install.packages("devtools")
 devtools::install_github("njahn82/inspirehep")
 ```
 
 Load `inspirehep`
 
-
-```r
+```{r}
 library('inspirehep')
 ```
 
@@ -73,23 +78,10 @@ SPIRES syntax: <https://inspirehep.net/info/hep/search-tips>
 
 #### Keyword search
 
-
-```r
+```{r}
 library(dplyr) # for pipes and tbl_df class
 hep_search("witten black hole", limit = 5) %>%
   tbl_df()
-#> Source: local data frame [5 x 13]
-#> 
-#>        id
-#>     (chr)
-#> 1 1436342
-#> 2 1424377
-#> 3 1418506
-#> 4 1414220
-#> 5 1409133
-#> Variables not shown: title (chr), author (chr), affiliation (chr), doi
-#>   (chr), report_number (chr), date_reported (chr), journal (chr), volume
-#>   (chr), issue (chr), keywords (chr), collection (chr), licence_url (chr)
 ```
 
 #### Exact Author search
@@ -98,50 +90,21 @@ INSPIRE HEP disambiguates author names. To search for an exact author, e.g.
 [Dominik Schwarz](http://inspirehep.net/author/profile/D.J.Schwarz.1) and get 
 his most frequent journals:
 
-
-```r
+```{r}
 hep_search('exactauthor:D.J.Schwarz.1', limit = 250) %>%
   group_by(journal) %>% 
   group_by(journal) %>% 
   summarise(counts = n()) %>% 
   arrange(desc(counts))
-#> Source: local data frame [39 x 2]
-#> 
-#>                    journal counts
-#>                      (chr)  (int)
-#> 1                Phys.Rev.     32
-#> 2                       NA     27
-#> 3        Astron.Astrophys.     13
-#> 4  Mon.Not.Roy.Astron.Soc.     11
-#> 5                      PoS     11
-#> 6                     JCAP      8
-#> 7           Phys.Rev.Lett.      6
-#> 8          Astropart.Phys.      3
-#> 9               Phys.Lett.      3
-#> 10          AIP Conf.Proc.      2
-#> ..                     ...    ...
 ```
 
 #### Full-text search
 
 Search in arXiv eprints:
 
-
-```r
+```{r}
 hep_search('find ft "faster than light"', limit = 5) %>%
   tbl_df()
-#> Source: local data frame [5 x 13]
-#> 
-#>        id
-#>     (chr)
-#> 1 1434969
-#> 2 1432686
-#> 3 1426682
-#> 4 1426148
-#> 5 1426037
-#> Variables not shown: title (chr), author (chr), affiliation (chr), doi
-#>   (chr), report_number (chr), date_reported (chr), journal (chr), volume
-#>   (chr), issue (chr), keywords (chr), collection (chr), licence_url (chr)
 ```
 
 #### Navigate through the search results
@@ -153,27 +116,9 @@ To jump to a record, use the `jrec` parameter. For example, you want records 20
 to 29, tell `hep_search` that you would like to start from record 20 and limit 
 your search results to 10 records.
 
-
-```r
+```{r}
 hep_search('witten black hole', jrec = 20, limit = 10) %>%
   tbl_df()
-#> Source: local data frame [10 x 13]
-#> 
-#>         id
-#>      (chr)
-#> 1  1275695
-#> 2  1261044
-#> 3  1245231
-#> 4  1243469
-#> 5  1243443
-#> 6  1242042
-#> 7  1221741
-#> 8  1221609
-#> 9  1191210
-#> 10 1115450
-#> Variables not shown: title (chr), author (chr), affiliation (chr), doi
-#>   (chr), report_number (chr), date_reported (chr), journal (chr), volume
-#>   (chr), issue (chr), keywords (chr), collection (chr), licence_url (chr)
 ```
 
 Last but not least, you can use `batch_size` to control the size of your result

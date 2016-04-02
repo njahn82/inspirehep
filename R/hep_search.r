@@ -45,13 +45,13 @@
 #' # (https://inspirehep.net/info/hep/search-tips)
 #'  
 #' # keywords
-#' hep_search("witten black hole", limit = 5)
+#' hep_search('witten black hole', limit = 5)
 #' 
 #' # work by exact author
 #' hep_search('exactauthor:D.J.Schwarz.1', limit = 5)
 #' 
 #' #Full text search available for arXiv eprints
-#' hep_search("find ft "faster than light", limit = 5)
+#' hep_search('find ft "faster than light', limit = 5)
 #' 
 #' # Find caption
 #' hep_search('find caption "Diagram for the fermion flow violating process"')
@@ -61,7 +61,7 @@
 #' 
 #' # Navigating the search results
 #' # Get record positions 20 - 29
-#' hep_search('witten' black hole", jrec = 20, limit = 10)
+#' hep_search('witten black hole', jrec = 20, limit = 10)
 #' }
 #' 
 #' @export

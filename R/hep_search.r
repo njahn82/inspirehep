@@ -66,16 +66,13 @@
 #' 
 #' @export
 
-
-
 hep_search <- function(p = NULL, jrec = 1, batch_size = 10, limit = 100) {
+ 
+  # input validation --------------------------------------------------------
+  valid_input <- function(p, jrec, limit, batch_size)
   
-  if(is.null(p))
-    stop("Please provide a search. The INSPIRE search syntax can be found in 
-         the online help https://inspirehep.net/info/hep/search-tips")
-  path = "search"
-
-  req <- hep_GET(path = path, query = 
+  # get number of records to be parsed and inform user about the next steps ----
+  req <- hep_GET("search", query = 
                    build_query(p = p, jrec = jrec, batch_size = batch_size))
   results_number <- results_total(httr::content(req, encoding = "UTF-8"))
   if(length(results_number) == 0)
@@ -85,14 +82,15 @@ hep_search <- function(p = NULL, jrec = 1, batch_size = 10, limit = 100) {
                 results_number, " records found!"))
   msg_lim <- ifelse(results_number > limit, limit, results_number)
   message(paste0(results_number, " records found, retrieving ", msg_lim))
-
+  
+  # prepare pageing in accordance with parameters ---------------------------
   pages <- counter(jrec = jrec, limit = limit, 
                    batch_size = batch_size, results_number = results_number)
   last_batch <- last_page_batch(start = jrec, limit, pages)
   
+  # loop over pages ---------------------------------------------------------
   if(length(pages) > 1) {
   results <- NULL
-  
   for (i in  pages[-length(pages)]) {
     tmp <- hep_search_(path, p, jrec = i, batch_size, 
                        limit)
@@ -103,10 +101,13 @@ hep_search <- function(p = NULL, jrec = 1, batch_size = 10, limit = 100) {
   results <- rbind(results, tmp)
   return(results) 
   } else {
-  hep_search_(path = path, p = p, jrec = jrec, batch_size = limit)
+  hep_search_("search" , p = p, jrec = jrec, batch_size = limit)
   }
 }
 
+
+
+# search and parse result page
 hep_search_ <- function(path, p, jrec, batch_size, limit) {
   req <- hep_GET(path = path, query = 
                    build_query(p, jrec = jrec, batch_size = batch_size))
@@ -116,6 +117,7 @@ hep_search_ <- function(path, p, jrec, batch_size, limit) {
   as.data.frame(works, stringsAsFactors = FALSE)
 }
 
+# create query for httr::GET
 build_query <- function(p = p, jrec = jrec, batch_size = batch_size){
   q <- list()
   q$p <- p
@@ -125,6 +127,7 @@ build_query <- function(p = p, jrec = jrec, batch_size = batch_size){
   q
 }
 
+# parse marc xml and return vector
 marc_parse <- function(out_childs, xpaths) {
   tt <- lapply(out_childs, function(x) 
     xml2::xml_text(
@@ -140,6 +143,7 @@ marc_parse <- function(out_childs, xpaths) {
   unlist(tt.df)
 }
 
+# marc cml field to be parsed
 marc_paths <- list(
   id = ".//d1:controlfield[@tag='001']",
   title = ".//d1:datafield[@tag='245']//d1:subfield[@code='a']",
@@ -153,8 +157,11 @@ marc_paths <- list(
   issue = ".//d1:datafield[@tag='773']//d1:subfield[@code='n']",
   keywords = ".//d1:datafield[@tag='695']//d1:subfield[@code='a']",
   collection = ".//d1:datafield[@tag='980']//d1:subfield[@code='a']",
+  scoap_ftxt = ".//d1:datafield[@tag='856']//d1:subfield[@code='u'][contains(text(), 'scoap')]",
+  arxiv_ftxt = ".//d1:datafield[@tag='856']//d1:subfield[@code='u'][contains(text(), 'arXiv')]",
   licence_url = ".//d1:datafield[@tag='540']//d1:subfield[@code='u']")
 
+# fetch total number of records
 results_total <- function(x) {
   if(!is(x, c("xml_document", "xml_nodeset")))
     stop("no xml_document")
@@ -162,6 +169,7 @@ results_total <- function(x) {
   as.numeric(gsub("[^\\d]+", "", string, perl=TRUE))
 }
 
+# get pages 
 counter <- function(jrec = jrec, limit = limit, 
                     batch_size = batch_size, results_number = results_number) {
   x <- ifelse(results_number < limit, results_number, limit)
@@ -169,7 +177,8 @@ counter <- function(jrec = jrec, limit = limit,
     x <- jrec
   seq(jrec, x, by = batch_size)
 }
-  
+
+# get size of last page  
 last_page_batch <- function(start, limit, pages) {
   ifelse(!limit < start, limit - tail(pages, n =1) + 1, limit)
 }

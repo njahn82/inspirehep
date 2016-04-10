@@ -27,7 +27,7 @@ nice and consider the following options for bulk downloads:
 - [OAI-PMH](https://inspirehep.net/oai2d?verb=Identify)
 - [JSON Dump](https://inspirehep.net/hep_records.json.gz)
 
-
+See this example how to work with the [json dump](#datadump)
 ## Installation
 
 Get the development version from GitHub
@@ -113,7 +113,7 @@ hep_search('find ft "faster than light"', limit = 5) %>%
 #### Navigate through the search results
 
 By default, 100 records are returned for each query. The parameter `limit` can
-be used to controll the number of records that you wish to retrieve.
+be used to control the number of records that you wish to retrieve.
 
 To jump to a record, use the `jrec` parameter. For example, you want records 20 
 to 29, tell `hep_search` that you would like to start from record 20 and limit 
@@ -131,6 +131,40 @@ longer response times. Consider the bulk download options via OAI-PMH or the
 json data dump if you need to get to work with a large set of INSPIRE records.
 
 ### Get record details
+
+## <a name="datadump"></a> Working with the json data dump
+
+INSPIRE HEP offers data dumps to support working with large amounts of INSPIRE
+HEP records. To prevent memory problems, load the json dump incrementally with
+the `jsonlite::stream_in` function. The function supports custom handlers, so
+you can apply your own function on the incoming stream.
+
+Suppose we want to retrieve all cited HEP publications in 2015. In the example
+of the INSPIRE HEP dump, load 500 records per iteration from the connection,
+select the columns `recid`, `citations` and `creation_data`, and filter out
+records published in 2015. The resulting data.frame is saved as temporary
+file, which can be loaded into R again.
+
+```{r}
+library(dplyr)
+library(curl)
+library(jsonlite)
+con <- gzcon(curl("https://inspirehep.net/hep_records.json.gz")) 
+output <- file(tmp <- tempfile(), open = "wb")
+stream_in(con, function(df){
+  df <- select(df, recid, citations, creation_date)
+  df <- filter(df, grepl('2015', creation_date))
+  stream_out(df, output, verbose = FALSE)
+})
+close(output)
+mydata <- stream_in(file(tmp))
+
+tbl_df(mydata)
+```
+
+This strategy originates from [this Jeroen Ooms talk on jsonlite and using Mongo DB](http://bit.ly/mongo-slides)
+
+
 
 to be added
 

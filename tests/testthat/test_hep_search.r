@@ -17,12 +17,12 @@ test_that("hep_search returns", {
   
   #are diminsions correct?
   expect_equal(nrow(a), 5)
-  expect_equal(ncol(a), 13)
+  expect_equal(ncol(a), 15)
   expect_equal(nrow(b), 5)
-  expect_equal(ncol(b), 13)
+  expect_equal(ncol(b), 15)
   expect_equal(nrow(c), 5)
-  expect_equal(ncol(c), 13)
-  expect_equal(ncol(e), 13)
+  expect_equal(ncol(c), 15)
+  expect_equal(ncol(e), 15)
   expect_equal(nrow(e), 10)
   
   # fails correctly

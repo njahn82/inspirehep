@@ -69,10 +69,11 @@
 hep_search <- function(p = NULL, jrec = 1, batch_size = 10, limit = 100) {
  
   # input validation --------------------------------------------------------
-  valid_input <- function(p, jrec, limit, batch_size)
+ # valid_input <- function(p, jrec, limit, batch_size)
+  valid_input(p, jrec, limit, batch_size)
   
   # get number of records to be parsed and inform user about the next steps ----
-  req <- hep_GET("search", query = 
+  req <- hep_GET(path = "search", query = 
                    build_query(p = p, jrec = jrec, batch_size = batch_size))
   results_number <- results_total(httr::content(req, encoding = "UTF-8"))
   if(length(results_number) == 0)
